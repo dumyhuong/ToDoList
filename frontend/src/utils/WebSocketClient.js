@@ -18,17 +18,17 @@ export default class WebSocketClient {
     };
   }
 
-  onOpen(callback) {
+  onopen(callback) {
     this.client.onopen = callback;
   }
 
-  onMessage(callback) {
+  onmessage(callback) {
     this.client.onmessage = (event) => {
       callback(event.data);
     };
   }
 
-  onClose(callback) {
+  onclose(callback) {
     this.client.onclose = callback;
   }
 
