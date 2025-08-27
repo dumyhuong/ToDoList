@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getAllToDo, addToDo, updateToDo, deleteToDo,updateComplete} from './utils/HandleApi';
 /* import Clock from "./Clock/Clocks.js"; 
  */
+import WebSocketClient from './utils/WebSocketClient';
 function App() {
   const[toDo,setToDo] = useState([])
   const[text,setText] = useState("")
@@ -18,7 +19,26 @@ function App() {
   const[total,setTotal] = useState(0); 
   useEffect(()=>{
     getAllToDo(setToDo)
+    // ket noi WebSocket nom
+    let ws = new WebSocketClient("wss://9950aedad196.ngrok-free.app/ws");
+  ws.onOpen(() => {
+    console.log("WS connected");
+  });
+  ws.onMessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data.type, data.message);
+  if (data.type === "broadcast") {
+    setToDo(prev => [...prev, { _id: Date.now(), text: data.message }]);
+  }
+};
+  ws.onClose(() => {
+    console.log("WS disconnected");
+  });
+  return () => {
+    ws.close();
+  };
   },[]);
+  
   // cập nhật số completed/total 
   useEffect(() =>{
     const totalTask = toDo.length;
