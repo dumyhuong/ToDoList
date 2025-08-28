@@ -7,9 +7,14 @@ const path = require("path");
 require('dotenv').config();
 
 const app = express();
-
+// Cấu hình CORS
+const corsOptions = {
+  origin: '*', // Cho phép tất cả các nguồn
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 // Middleware
-app.use(cors({ origin: '*' }));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -35,7 +40,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// WebSocket gắn trực tiếp vào server Express
+// Khởi tạo WebSocket server
 const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws) => {

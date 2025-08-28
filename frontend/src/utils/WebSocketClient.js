@@ -1,47 +1,81 @@
 export default class WebSocketClient {
-  constructor(url) {
+  constructor(url, reconnectInterval = 3000) {
     this.url = url;
     this.client = null;
+    this.reconnectInterval = reconnectInterval;
+
+    this._onOpenCallback = null;
+    this._onMessageCallback = null;
+    this._onCloseCallback = null;
+    this._onErrorCallback = null;
+
+    this.messageQueue = [];
     this.connect();
   }
 
   connect() {
     this.client = new WebSocket(this.url);
 
-    this.client.onerror = (err) => {
-      console.error("WebSocket Error:", err);
+    this.client.onopen = () => {
+      console.log("WebSocket connected:", this.url);
+
+      // gửi các message còn tồn đọng
+      while (this.messageQueue.length > 0) {
+        this.client.send(this.messageQueue.shift());
+      }
+
+      if (this._onOpenCallback) this._onOpenCallback();
     };
 
-    this.client.onclose = () => {
-      console.log("WebSocket closed, retrying in 3s...");
-      setTimeout(() => this.connect(), 3000); // auto reconnect
+    this.client.onmessage = (event) => {
+      if (this._onMessageCallback) {
+        this._onMessageCallback(event.data);
+      }
+    };
+
+    this.client.onerror = (err) => {
+      console.error(" WebSocket Error:", err);
+      if (this._onErrorCallback) this._onErrorCallback(err);
+    };
+
+    this.client.onclose = (event) => {
+      console.warn(
+        ` WebSocket closed (code=${event.code}, reason=${event.reason}), reconnecting in ${this.reconnectInterval / 1000}s...`
+      );
+      if (this._onCloseCallback) this._onCloseCallback(event);
+
+      setTimeout(() => this.connect(), this.reconnectInterval);
     };
   }
 
+  // === Public methods ===
   onopen(callback) {
-    this.client.onopen = callback;
+    this._onOpenCallback = callback;
   }
 
   onmessage(callback) {
-    this.client.onmessage = (event) => {
-      callback(event.data);
-    };
+    this._onMessageCallback = callback;
   }
 
   onclose(callback) {
-    this.client.onclose = callback;
+    this._onCloseCallback = callback;
+  }
+
+  onerror(callback) {
+    this._onErrorCallback = callback;
   }
 
   send(message) {
-    if (this.client.readyState === WebSocket.OPEN) {
+    if (this.client && this.client.readyState === WebSocket.OPEN) {
       this.client.send(message);
     } else {
-      console.warn("WebSocket not connected...", message);
+      console.warn("WebSocket not open, queueing message:", message);
+      this.messageQueue.push(message);
     }
   }
 
   close() {
-    if (this.client.readyState === WebSocket.OPEN) {
+    if (this.client) {
       this.client.close();
     }
   }

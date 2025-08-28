@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseUrl = "https://9fa596a6c99d.ngrok-free.app/api"; 
+const baseUrl = "https://d03b0c661bc4.ngrok-free.app/api"; 
+
 const getAllToDo = (setToDo) => {
     axios
         .get(`${baseUrl}/todos`)
@@ -34,7 +35,7 @@ const updateToDo = (id, text, setToDo, setText, setIsUpdating) => {
 
 const updateComplete = (id, complete, setToDo) => {
     axios
-        .put(`${baseUrl}/todos/${id}`, { complete }) // dùng complete truyền vào
+        .put(`${baseUrl}/todos/${id}`, { complete })
         .then(() => getAllToDo(setToDo))
         .catch(err => console.log(err));
 };

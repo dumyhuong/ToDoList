@@ -3,6 +3,7 @@ import ToDo from './components/ToDo';
 import { toast, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllToDo, addToDo, updateToDo, deleteToDo, updateComplete } from './utils/HandleApi';
+import WebSocketClient from './utils/WebSocketClient';
 
 function App() {
   const [toDo, setToDo] = useState([]);
@@ -16,32 +17,19 @@ function App() {
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(0);
 
-  const API_BASE = "https://9fa596a6c99d.ngrok-free.app"; // Thay bằng URL ngrok hiện tại
+  const API_BASE = "https://d03b0c661bc4.ngrok-free.app"; // Thay bằng URL ngrok hiện tại
 
   // Lấy danh sách ToDo và kết nối WebSocket
   useEffect(() => {
-    getAllToDo(setToDo);
+    getAllToDo() 
+    const ws = new WebSocketClient("wss://abcd1234.ngrok-free.app/ws");
 
-    const ws = new WebSocket(API_BASE.replace(/^http/, 'ws'));
+    ws.onopen(() => console.log("Connected!"));
+    ws.onmessage((msg) => console.log("Message:", msg));
+    ws.onclose(() => console.log("Closed!"));
+    ws.onerror((err) => console.error("Error:", err));
 
-    ws.onopen = () => {
-      console.log("WS connected");
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === "broadcast") {
-          setToDo(prev => [...prev, { _id: Date.now(), text: data.message }]);
-        }
-      } catch (err) {
-        console.error("Non-JSON message:", event.data);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WS disconnected");
-    };
+    ws.send(JSON.stringify({ type: "hello", text: "Hi server " }));
 
     return () => ws.close();
   }, []);
