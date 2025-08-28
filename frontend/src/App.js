@@ -23,7 +23,7 @@ function App() {
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(0);
 
-  // ⚡️ thay đúng URL backend + websocket của bạn
+  // thay đúng URL backend + websocket của bạn
   const API_BASE = "https://6fba38de9272.ngrok-free.app";
   const WS_URL = "wss://6fba38de9272.ngrok-free.app"; // có thể là wss://.../ws tuỳ backend
 

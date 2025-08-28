@@ -48,7 +48,7 @@ export default class WebSocketClient {
     };
   }
 
-  // === Public methods ===
+  //Public methods
   onopen(callback) {
     this._onOpenCallback = callback;
   }
