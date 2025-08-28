@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const baseUrl = "https://d03b0c661bc4.ngrok-free.app/api"; 
+const baseUrl = "https://6fba38de9272.ngrok-free.app/api"; 
 
 const getAllToDo = (setToDo) => {
-    axios
-        .get(`${baseUrl}/todos`)
+    axios.get(`${baseUrl}/todos`)
         .then(({ data }) => {
             console.log('data --->', data);
             setToDo(data);
@@ -13,8 +12,7 @@ const getAllToDo = (setToDo) => {
 };
 
 const addToDo = (text, setText, setToDo) => {
-    axios
-        .post(`${baseUrl}/todos`, { text })
+    axios.post(`${baseUrl}/todos`, { text })
         .then(() => {
             setText("");
             getAllToDo(setToDo);
@@ -23,8 +21,7 @@ const addToDo = (text, setText, setToDo) => {
 };
 
 const updateToDo = (id, text, setToDo, setText, setIsUpdating) => {
-    axios
-        .put(`${baseUrl}/todos/${id}`, { text })
+    axios.put(`${baseUrl}/todos/${id}`, { text })
         .then(() => {
             setText("");
             setIsUpdating(false);
@@ -34,29 +31,20 @@ const updateToDo = (id, text, setToDo, setText, setIsUpdating) => {
 };
 
 const updateComplete = (id, complete, setToDo) => {
-    axios
-        .put(`${baseUrl}/todos/${id}`, { complete })
+    axios.put(`${baseUrl}/todos/${id}`, { complete })
         .then(() => getAllToDo(setToDo))
         .catch(err => console.log(err));
 };
 
 const deleteToDo = (id, setToDo) => {
-    axios
-        .delete(`${baseUrl}/todos/${id}`)
+    axios.delete(`${baseUrl}/todos/${id}`)
         .then(() => getAllToDo(setToDo))
         .catch(err => console.log(err));
 };
 
 const toggleComplete = (id, currentComplete, setToDo) => {
-    axios
-        .put(`${baseUrl}/todos/${id}`, { complete: !currentComplete })
-        .then(({ data }) => {
-            setToDo(prev =>
-                prev.map(item =>
-                    item._id === id ? { ...item, complete: data.complete } : item
-                )
-            );
-        })
+    axios.put(`${baseUrl}/todos/${id}`, { complete: !currentComplete })
+        .then(() => getAllToDo(setToDo))
         .catch(err => console.log(err));
 };
 
