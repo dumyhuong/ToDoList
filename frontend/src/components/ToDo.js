@@ -13,7 +13,7 @@ const ToDo = ({ text, complete, toggleComplete, updateMode, deleteToDo }) => {
           onChange={toggleComplete}
         />
         <span className="todo-text">{text}</span>
-        {complete && <span className="done-label">completed</span>}
+        {complete && <span className="done-label"></span>}
       </div>
 
       {/* Nút edit/delete */}

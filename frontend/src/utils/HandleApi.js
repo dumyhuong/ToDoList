@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = "https://6fba38de9272.ngrok-free.app/api"; 
+const baseUrl = "https://2297566171ac.ngrok-free.app/api"; 
 
 const getAllToDo = (setToDo) => {
     axios.get(`${baseUrl}/todos`)

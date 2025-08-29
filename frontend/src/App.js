@@ -23,9 +23,8 @@ function App() {
   const [completed, setCompleted] = useState(0);
   const [total, setTotal] = useState(0);
 
-  // thay đúng URL backend + websocket của bạn
-  const API_BASE = "https://6fba38de9272.ngrok-free.app";
-  const WS_URL = "wss://6fba38de9272.ngrok-free.app"; // có thể là wss://.../ws tuỳ backend
+  const API_BASE = "https://2297566171ac.ngrok-free.app";
+  const WS_URL = "wss://2297566171ac.ngrok-free.app";
 
   // Lấy danh sách ToDo khi load
   useEffect(() => {
@@ -66,7 +65,7 @@ function App() {
     setCompleted(doneTask);
   }, [toDo]);
 
-  // === CRUD ===
+  //CRUD 
   const updateMode = (_id, currentText) => {
     setIsUpdating(true);
     setText(currentText);
@@ -75,9 +74,9 @@ function App() {
   };
 
   const handleAddOrUpdate = () => {
-    if (!text.trim()) return;
+    if (!text.trim()) return; // Nếu text rỗng (chỉ toàn khoảng trắng) thì không làm gì
 
-    if (isUpdating) {
+    if (isUpdating) { // Nếu đang ở chế độ cập nhật nhưng text không thay đổi so với bản gốc
       if (text.trim() === originalText.trim()) {
         resetInput();
         return;
@@ -89,24 +88,24 @@ function App() {
       toast.success("Added successfully!", { transition: Bounce });
     }
   };
-
-  const confirmAction = () => {
+    // Hàm xác nhận hành động trong modal (xóa hoặc cập nhật)
+  const confirmAction = () => { 
     if (modalAction === "delete") {
       deleteToDo(modalTargetId, setToDo, API_BASE);
       toast.success("Deleted successfully!", { transition: Bounce });
     } else if (modalAction === "update") {
-      handleAddOrUpdate();
+      handleAddOrUpdate(); // Nếu xác nhận cập nhật thì gọi lại handleAddOrUpdate
     }
-    setShowModal(false);
+    setShowModal(false); // Đóng modal sau khi thực hiện xong
   };
 
   const toggleComplete = (id, currentComplete) => {
     const newStatus = !currentComplete;
-    setToDo((prev) =>
+    setToDo((prev) => // Cập nhật state ngay để UI phản ứng nhanh (optimistic update)
       prev.map((t) => (t._id === id ? { ...t, complete: newStatus } : t))
     );
-    updateComplete(id, newStatus, setToDo, API_BASE);
-  };
+    updateComplete(id, newStatus, setToDo, API_BASE); // Gọi API để cập nhật trạng thái trong backend
+  }; 
 
   const resetInput = () => {
     setIsUpdating(false);
