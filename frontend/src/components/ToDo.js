@@ -2,7 +2,7 @@ import React from "react";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 
-const ToDo = ({ text, complete, toggleComplete, updateMode, deleteToDo }) => {
+const ToDo = ({id, text, complete, toggleComplete, updateMode, deleteToDo }) => {
   return (
     <div className={`todo ${complete ? "done" : ""}`}>
       {/* Nhiệm vụ */}
@@ -10,7 +10,7 @@ const ToDo = ({ text, complete, toggleComplete, updateMode, deleteToDo }) => {
         <input
           type="checkbox"
           checked={complete} 
-          onChange={toggleComplete}
+          // onChange={toggleComplete}
         />
         <span className="todo-text">{text}</span>
         {complete && <span className="done-label"></span>}
@@ -18,7 +18,11 @@ const ToDo = ({ text, complete, toggleComplete, updateMode, deleteToDo }) => {
 
       {/* Nút edit/delete */}
       <div className="icons">
-        <BiEdit className="icon" onClick={updateMode} />
+        <BiEdit 
+          className={`icon ${complete ? "disabled" : ""}`}
+          onClick={!complete ? () => updateMode(id, text, complete) : undefined}
+          style={{ cursor: complete ? "not-allowed" : "pointer", opacity: complete ? 0.5 : 1 }}
+        />
         <AiFillDelete className="icon" onClick={deleteToDo} />
       </div>
       

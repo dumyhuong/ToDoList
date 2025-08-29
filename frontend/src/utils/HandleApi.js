@@ -31,6 +31,7 @@ const updateToDo = (id, text, setToDo, setText, setIsUpdating) => {
 };
 
 const updateComplete = (id, complete, setToDo) => {
+   // console.log('chedc')
     axios.put(`${baseUrl}/todos/${id}`, { complete })
         .then(() => getAllToDo(setToDo))
         .catch(err => console.log(err));

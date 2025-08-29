@@ -27,6 +27,9 @@ function App() {
   const WS_URL = "wss://2297566171ac.ngrok-free.app";
 
   // Lấy danh sách ToDo khi load
+  useEffect(()=>{
+    console.log("Todo:",toDo.map(t=>t._id));
+  },[toDo.length]);
   useEffect(() => {
     getAllToDo(setToDo, API_BASE);
 
@@ -66,7 +69,11 @@ function App() {
   }, [toDo]);
 
   //CRUD 
-  const updateMode = (_id, currentText) => {
+  const updateMode = (_id, currentText, isComplete) => {
+    if(isComplete) {
+      toast.info("Task is complete");
+      return ;
+    } 
     setIsUpdating(true);
     setText(currentText);
     setOriginalText(currentText);
@@ -99,12 +106,13 @@ function App() {
     setShowModal(false); // Đóng modal sau khi thực hiện xong
   };
 
-  const toggleComplete = (id, currentComplete) => {
+  const toggleComplete = async (id, currentComplete) => {
+    //console.log(1);
     const newStatus = !currentComplete;
     setToDo((prev) => // Cập nhật state ngay để UI phản ứng nhanh (optimistic update)
       prev.map((t) => (t._id === id ? { ...t, complete: newStatus } : t))
     );
-    updateComplete(id, newStatus, setToDo, API_BASE); // Gọi API để cập nhật trạng thái trong backend
+    await updateComplete(id, newStatus, setToDo, API_BASE); // Gọi API để cập nhật trạng thái trong backend
   }; 
 
   const resetInput = () => {
@@ -118,7 +126,6 @@ function App() {
     <div className="App">
       <div className="container">
         <h1>ToDo List</h1>
-
         <div className="star-container">
           <div className="header">
             <h3>Keep it up!</h3>
@@ -158,15 +165,17 @@ function App() {
             {isUpdating ? "Update" : "Add"}
           </button>
         </div>
-
-        <div className="list">
+           
+        <div className="list-wapper">
+          <div className="list">
           {toDo.map((item) => (
             <ToDo
               key={item._id}
+              id={item._id}
               text={item.text}
               complete={Boolean(item.complete)}
               toggleComplete={() => toggleComplete(item._id, item.complete)}
-              updateMode={() => updateMode(item._id, item.text)}
+              updateMode={() => updateMode(item._id, item.text,item.complete)}
               deleteToDo={() => {
                 setModalTargetId(item._id);
                 setModalAction("delete");
@@ -174,6 +183,7 @@ function App() {
               }}
             />
           ))}
+        </div>
         </div>
       </div>
 

@@ -25,19 +25,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 .container {
-  position:absolute;
-  margin:auto; 
+  position:relative; 
+  margin:0; 
   /* background: rgba(255, 255, 255, 0.15); */
   background:#fff; 
   backdrop-filter: blur(15px);
-  border-radius: 15px;
+  /* border-radius: 15px; */
   padding: 20px;
-  height:600px; 
+  height:700px; 
   width: 600px;
-  top:0;
+  max-height: 90vh;
+  overflow:auto; 
+  /* top:0;
   bottom:0;
   right:0;
-  left:0;
+  left:0; */
   justify-content: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   color:#0a0a0a;
@@ -144,10 +146,17 @@ h3 {
   transform: none; /* không scale */
   opacity: 0.6;
 }
+.list-wrapper {
+  max-height: 450px;      /* chiều cao tối đa danh sách */
+  overflow-y: auto;       /* scroll khi vượt */
+  border-radius: 15px;    /* giữ border-radius container */
+  padding-right: 5px;     /* tránh scroll chạm mép */
+}
 .list {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
 }
 .todo {
   background-color: rgba(255, 255, 255, 0.9);
@@ -157,6 +166,21 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  word-wrap: break-word;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+.todo .text {
+  display: flex;
+  align-items: center;
+  border-radius: 15px;
+  flex: 1; /* chiếm không gian còn lại */
+  overflow-wrap: anywhere;  /* text dài sẽ xuống dòng */
+  word-break: break-word;
+}
+.todo .text input[type="checkbox"] {
+  margin-right: 8px; /* khoảng cách giữa checkbox và text */
 }
 .actions {
   display: flex;
